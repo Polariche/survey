@@ -1,1 +1,22 @@
-TEST
+<head>
+	<script type="text/javascript">
+
+	</script>
+</head>
+<body>
+	{% for photo in photos %}
+	<div>
+		<p> <img src="{{imagepath}}\{{photo.filename}}.png"></p>
+		<p>{{photo.filename}} </p>
+		<p>
+		<form>
+			<input type = 'radio' name = 'radio-button' value='1'></input>
+			<input type = 'radio' name = 'radio-button' value='2'></input>
+			<input type = 'radio' name = 'radio-button' value='3'></input>
+			<input type = 'radio' name = 'radio-button' value='4'></input>
+			<input type = 'radio' name = 'radio-button' value='5'></input>
+		</form>
+		</p>
+	</div>
+	{% endfor %}
+</body>

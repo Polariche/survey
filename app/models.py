@@ -10,6 +10,7 @@ class Photo(models.Model):
     filename = models.CharField(max_length=30, primary_key=True)
     univ_code = models.CharField(max_length=1, choices = UNIVS)
 
+
     @classmethod
     def CreatePhoto(cls, _filename, _univ_code):
         photo = cls(filename=_filename, univ_code = _univ_code)
@@ -41,7 +42,7 @@ class Person(models.Model):
         ('J', 'Jeonnam')
     )
 
-    studentcode = models.IntegerField()
+    studentcode = models.IntegerField(primary_key=True)
     univ_code = models.CharField(max_length=1, choices = UNIVS)
 
     def __str__(self):

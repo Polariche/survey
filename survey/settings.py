@@ -120,4 +120,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR)
 
+PHOTO_ROOT = BASE_DIR + '\\app\\photos'
+
 DEBUG = True
+TEMPLATE_DEBUG = True

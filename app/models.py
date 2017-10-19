@@ -58,3 +58,4 @@ class Vote(models.Model):
     def __str__(self):
         return ', '.join(map(str, [self.photo, self.score, '(Voter: '+str(self.voter) + ')']))
 
+

@@ -15,7 +15,16 @@
 {# Display django.contrib.messages as Bootstrap alerts #}
 {% bootstrap_messages %}
 
-	<p style="padding-top: 30px;"><h3>점수를 매겨주세요!</h3></p>
+	<div name="STAGE1" style = "display: none;">
+		<h3>학번을 입력해주세요</h3>
+		<h5>(중복 방지 및 경품 추첨용으로 사용하는 정보입니다)</h5>
+		<br>
+		<input type='text' name='studentcode'></input>  
+		<input type = "submit" name = "to_stage2" value="다음" class="btn btn-success btn-xs">
+	</div>
+
+	<div name="STAGE2" style = "display: none;">
+	<p><h3>점수를 매겨주세요!</h3></p>
 
 	{% for photo in photos %}
 	{% load static %}
@@ -36,15 +45,21 @@
 	</div>
 	{% endfor %}
 	<input type = "submit" name = "next" value="다음" style="display: none;" align="center" class="btn btn">
+	<input type = "submit" name = "to_stage3" value="다음" style="display: none;" class="btn btn-success">
+
+	</div>
 
 	<div>
 	<form action="" align="center" width="100%">
 		<input type = "text" name = "result" value="" style="display: none;"></input>
-		<input type = "submit" name = "submit" value="다음" style="display: none;" class="btn btn-success">
+		
 	</form>
 	</div>
 
+
+
 	<script type="text/javascript">
+
 		var totalphotos = {{totalphotos}};
 		var n = 0;
 		var names = "{{names}}".split(" ");
@@ -52,16 +67,35 @@
 		var allRadios = document.getElementsByName('radio-button');
 		var i = 0;
 
-		var votes = [];
-
 		document.getElementsByName(names[0])[0].style.display = 'block';
+
+		var univcode = '{{univcode}}';
+		var studentcode = {{studentcode}};
+		var votes = [];
+		var answers = [];
+
+		if (univcode == 'G') {
+			document.getElementsByName('STAGE1')[0].style.display = 'inline';
+			document.getElementsByName('to_stage2')[0].onclick = function() {
+				input = document.getElementsByName('studentcode')[0].value;
+				if (input > 20000000) {
+					document.getElementsByName('STAGE1')[0].style.display = 'none';
+					document.getElementsByName('STAGE2')[0].style.display = 'inline';
+					studentcode = input;
+				} else {
+					alert('올바른 값을 입력해주세요!');
+				}
+			}
+		} else {
+			document.getElementsByName('STAGE2')[0].style.display = 'inline';
+		}
 
 		for(i = 0; i < allRadios.length; i++){
 		        allRadios[i].onclick = function(){
 			        if (n<totalphotos-1) {
 			        	document.getElementsByName('next')[0].style.display = 'inline';
 			        } else {
-			        	document.getElementsByName('submit')[0].style.display = 'inline';
+			        	document.getElementsByName('to_stage3')[0].style.display = 'inline';
 			        }
 		        	votes[n] = this.value;
 		        };

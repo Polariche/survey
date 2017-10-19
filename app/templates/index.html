@@ -2,9 +2,18 @@
 <head>
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-
+	<link rel="stylesheet" href="https://bootswatch.com/simplex/bootstrap.min.css">
 </head>
 <body align="center">
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
 
 	{% for photo in photos %}
 	{% load static %}
@@ -13,11 +22,13 @@
 		<p>
 		<form>
 			1	2	3	4	5 <br>
+  			{% buttons %}
 			<input type = 'radio' name = 'radio-button' value='1'></input>
 			<input type = 'radio' name = 'radio-button' value='2'></input>
 			<input type = 'radio' name = 'radio-button' value='3'></input>
 			<input type = 'radio' name = 'radio-button' value='4'></input>
 			<input type = 'radio' name = 'radio-button' value='5'></input>
+			{% endbuttons %}
 		</form>
 		</p>
 	</div>

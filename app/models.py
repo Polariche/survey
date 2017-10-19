@@ -9,6 +9,7 @@ class Photo(models.Model):
 
     filename = models.CharField(max_length=30, primary_key=True)
     univ_code = models.CharField(max_length=1, choices = UNIVS)
+    img = models.ImageField(upload_to='photos/', default='photos/chick1.png')
 
 
     @classmethod

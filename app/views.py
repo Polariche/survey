@@ -7,4 +7,8 @@ from survey import settings
 def photo_survey(request):
 	photos = Photo.objects.all()
 	imagepath = settings.PHOTO_ROOT
-	return render(request, 'index.html', {'imagepath': imagepath, 'photos': photos})
+	return render(request, 'index.html', 
+		{'imagepath': imagepath, 
+		'photos': photos, 
+		'totalphotos': len(photos),
+		'names': ' '.join([photo.filename for photo in photos])})

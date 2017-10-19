@@ -1,15 +1,19 @@
-<head>
-	<script type="text/javascript">
 
-	</script>
+<head>
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
 </head>
-<body>
+<body align="center">
+
+
 	{% for photo in photos %}
-	<div>
-		<p> <img src="{{imagepath}}\{{photo.filename}}.png"></p>
+	<div name = "{{photo.filename}}" style = "display: none;">
+		<p> <img src="{{imagepath}}\{{photo.img.url}}" width = "300" height = " 300"></p>
 		<p>{{photo.filename}} </p>
 		<p>
 		<form>
+			1	2	3	4	5 <br>
 			<input type = 'radio' name = 'radio-button' value='1'></input>
 			<input type = 'radio' name = 'radio-button' value='2'></input>
 			<input type = 'radio' name = 'radio-button' value='3'></input>
@@ -19,4 +23,30 @@
 		</p>
 	</div>
 	{% endfor %}
+
+	<img src="C:\Users\Polar\chick1.png">
+
+
+	<script type="text/javascript">
+		var totalphotos = {{totalphotos}};
+		var n = 0;
+		var names = "{{names}}".split(" ");
+
+		var allRadios = document.getElementsByName('radio-button');
+		var i = 0;
+
+		document.getElementsByName(names[0])[0].style.display = 'block';
+
+		for(i = 0; i < allRadios.length; i++){
+		        allRadios[i].onclick = function(){
+		        	if (n<totalphotos) {
+		        		document.getElementsByName(names[n])[0].style.display = 'none';
+		        		if (n+1 < totalphotos) {
+		        			document.getElementsByName(names[n+1])[0].style.display = 'block';
+		        		}
+		        		n++;
+		        	}
+		        };
+		}
+	</script>
 </body>

@@ -15,16 +15,21 @@ class Photo(models.Model):
         photo = cls(filename=_filename, univ_code = _univ_code)
         return photo
 
-    def AddScore(self, univcode, score):
-        scoretable = self.gist_score if self.univcode == 'G' else self.jeonnam_score
-        scoretable[score] += 1
+    def GetVotes(self, univcode):
+        return [x for x in Vote.objects.filter(photo=self) if x.voter.univ_code == univcode]
 
     def GetMean(self, univcode):
-        scoretable = self.gist_score if self.univcode == 'G' else self.jeonnam_score
-        return sum([scoretable[i]*i for i in range(1,6)]) / sum(scoretable)
+        votes = self.GetVotes(univcode)
+        return sum([x.score for x in votes]) / len(votes)
 
     def GetTotalMean(self):
-        return sum([(self.gist_score[i]+jeonnam_score[i])*i for i in range(1,6)]) / (sum(gist_score)+sum(jeonnam_score))
+        scores = 0
+        totalvotes = 0
+        for u in UNIVS:
+            vote = GetVotes(u[0])
+            scores += sum([x.score for x in vote])
+            totalvotes += len(vote)
+        return scores / totalvotes
 
     def __str__(self):
         return self.filename
@@ -39,8 +44,16 @@ class Person(models.Model):
     studentcode = models.IntegerField()
     univ_code = models.CharField(max_length=1, choices = UNIVS)
 
+    def __str__(self):
+        return str(self.studentcode)
+
 
 class Vote(models.Model):
-
     voter = models.ForeignKey(Person, on_delete = models.CASCADE)
     photo = models.ForeignKey(Photo, on_delete = models.CASCADE)
+
+    score = models.IntegerField(default=0, choices = tuple([(i,i) for i in range(1,6)]))
+
+    def __str__(self):
+        return ', '.join(map(str, [self.photo, self.score, '(Voter: '+str(self.voter) + ')']))
+

@@ -4,11 +4,10 @@ from survey import settings
 
 # Create your views here.
 
-def photo_survey(request):
+def photo_survey(request, univcode):
 	photos = Photo.objects.all()
-	imagepath = settings.PHOTO_ROOT
 	return render(request, 'index.html', 
-		{'imagepath': imagepath, 
+		{'univcode': univcode,
 		'photos': photos, 
 		'totalphotos': len(photos),
 		'names': ' '.join([photo.filename for photo in photos])})

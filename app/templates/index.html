@@ -6,11 +6,10 @@
 </head>
 <body align="center">
 
-
 	{% for photo in photos %}
+	{% load static %}
 	<div name = "{{photo.filename}}" style = "display: none;">
-		<p> <img src="{{imagepath}}\{{photo.img.url}}" width = "300" height = " 300"></p>
-		<p>{{photo.filename}} </p>
+		<p> <img src="{% static "" %}{{photo.filename}}.png"></p>
 		<p>
 		<form>
 			1	2	3	4	5 <br>
@@ -24,8 +23,12 @@
 	</div>
 	{% endfor %}
 
-	<img src="C:\Users\Polar\chick1.png">
-
+	<div>
+	<form action="" align="center" width="100%">
+		<input type = "text" name = "result" value="" style="display: none;"></input>
+		<input type = "submit" name = "submit" value="완료" style="display: none;" align="center">
+	</form>
+	</div>
 
 	<script type="text/javascript">
 		var totalphotos = {{totalphotos}};
@@ -35,16 +38,24 @@
 		var allRadios = document.getElementsByName('radio-button');
 		var i = 0;
 
+		var votes = [];
+
 		document.getElementsByName(names[0])[0].style.display = 'block';
 
 		for(i = 0; i < allRadios.length; i++){
 		        allRadios[i].onclick = function(){
 		        	if (n<totalphotos) {
-		        		document.getElementsByName(names[n])[0].style.display = 'none';
 		        		if (n+1 < totalphotos) {
+		        			document.getElementsByName(names[n])[0].style.display = 'none';
 		        			document.getElementsByName(names[n+1])[0].style.display = 'block';
+		        		} else {
+		        			//end of survey
+		        			document.getElementsByName('submit')[0].style.display = 'inline';
 		        		}
+		        		votes[n] = this.value;
 		        		n++;
+		        	} else {
+		        		votes[totalphotos-1] = this.value;
 		        	}
 		        };
 		}

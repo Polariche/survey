@@ -15,13 +15,15 @@
 {# Display django.contrib.messages as Bootstrap alerts #}
 {% bootstrap_messages %}
 
+	<p style="padding-top: 30px;"><h3>점수를 매겨주세요!</h3></p>
+
 	{% for photo in photos %}
 	{% load static %}
 	<div name = "{{photo.filename}}" style = "display: none;">
 		<p> <img src="{% static "" %}{{photo.filename}}.png"></p>
 		<p>
 		<form>
-			1	2	3	4	5 <br>
+			<span style="font-size: 20px;">1	2	3	4	5</span> <br>
   			{% buttons %}
 			<input type = 'radio' name = 'radio-button' value='1'></input>
 			<input type = 'radio' name = 'radio-button' value='2'></input>
@@ -33,11 +35,12 @@
 		</p>
 	</div>
 	{% endfor %}
+	<input type = "submit" name = "next" value="다음" style="display: none;" align="center" class="btn btn">
 
 	<div>
 	<form action="" align="center" width="100%">
 		<input type = "text" name = "result" value="" style="display: none;"></input>
-		<input type = "submit" name = "submit" value="완료" style="display: none;" align="center">
+		<input type = "submit" name = "submit" value="다음" style="display: none;" class="btn btn-success">
 	</form>
 	</div>
 
@@ -55,20 +58,22 @@
 
 		for(i = 0; i < allRadios.length; i++){
 		        allRadios[i].onclick = function(){
-		        	if (n<totalphotos) {
-		        		if (n+1 < totalphotos) {
-		        			document.getElementsByName(names[n])[0].style.display = 'none';
-		        			document.getElementsByName(names[n+1])[0].style.display = 'block';
-		        		} else {
-		        			//end of survey
-		        			document.getElementsByName('submit')[0].style.display = 'inline';
-		        		}
-		        		votes[n] = this.value;
-		        		n++;
-		        	} else {
-		        		votes[totalphotos-1] = this.value;
-		        	}
+			        if (n<totalphotos-1) {
+			        	document.getElementsByName('next')[0].style.display = 'inline';
+			        } else {
+			        	document.getElementsByName('submit')[0].style.display = 'inline';
+			        }
+		        	votes[n] = this.value;
 		        };
+		}
+
+		document.getElementsByName("next")[0].onclick = function() {
+		    if (n < totalphotos-1) {
+		        	document.getElementsByName(names[n])[0].style.display = 'none';
+		        	document.getElementsByName(names[n+1])[0].style.display = 'block';
+		        	this.style.display = 'none';
+		        	n++;
+		    }
 		}
 	</script>
 </body>

@@ -26,7 +26,7 @@ class Photo(models.Model):
     def GetTotalMean(self):
         scores = 0
         totalvotes = 0
-        for u in UNIVS:
+        for u in self.UNIVS:
             vote = GetVotes(u[0])
             scores += sum([x.score for x in vote])
             totalvotes += len(vote)

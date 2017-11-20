@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Photo, Person, Vote, PersonForm
+from .models import Photo, Person, Vote, PersonForm, VoteForm
 from survey import settings
 import openpyxl
 

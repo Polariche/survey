@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ModelForm
 from django.utils import timezone
 
 class Photo(models.Model):
@@ -9,11 +10,11 @@ class Photo(models.Model):
 
     filename = models.CharField(max_length=30, primary_key=True)
     univ_code = models.CharField(max_length=1, choices = UNIVS)
-
+    gender = models.CharField(max_length=1, choices = (('M', 'Male'), ('F','Female')))
 
     @classmethod
-    def CreatePhoto(cls, _filename, _univ_code):
-        photo = cls(filename=_filename, univ_code = _univ_code)
+    def CreatePhoto(cls, _filename, _univ_code, _gender):
+        photo = cls(filename=_filename, univ_code = _univ_code, gender = _gender)
         return photo
 
     def GetVotes(self, univcode):
@@ -50,12 +51,24 @@ class Person(models.Model):
 
 
 class Vote(models.Model):
-    voter = models.ForeignKey(Person, on_delete = models.CASCADE)
-    photo = models.ForeignKey(Photo, on_delete = models.CASCADE)
+    voter = models.ForeignKey('Person', on_delete=models.CASCADE)
+    photo = models.ForeignKey('Photo', on_delete=models.CASCADE)
 
-    score = models.IntegerField(default=0, choices = tuple([(i,i) for i in range(1,6)]))
+    score1 = models.IntegerField(default=0, choices = tuple([(i,i) for i in range(1,6)]))
+    score2 = models.IntegerField(default=0, choices = tuple([(i,i) for i in range(1,6)]))
+    score3 = models.IntegerField(default=0, choices = tuple([(i,i) for i in range(1,6)]))
 
     def __str__(self):
-        return ', '.join(map(str, [self.photo, self.score, '(Voter: '+str(self.voter) + ')']))
+        return ' - '.join([str(self.voter.studentcode), self.photo.filename])
+
+class PersonForm(ModelForm):
+    class Meta:
+        model = Person
+        fields = ['studentcode', 'univ_code']
+
+class VoteForm(ModelForm):
+    class Meta:
+        model = Vote
+        fields = []
 
 

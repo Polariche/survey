@@ -19,7 +19,7 @@
 		<h3>학번을 입력해주세요</h3>
 		<h5>(중복 방지 및 경품 추첨용으로 사용하는 정보입니다)</h5>
 		<br>
-		<input type='text' name='studentcode'></input>  
+		<input type='text' name='studentcode_input'></input>  
 		<input type = "submit" name = "to_stage2" value="다음" class="btn btn-success btn-xs">
 	</div>
 
@@ -28,31 +28,66 @@
 
 	{% for photo in photos %}
 	{% load static %}
-	<div name = "{{photo.filename}}" style = "display: none;">
-		<p> <img src="{% static "" %}{{photo.filename}}.png"></p>
+	<div id = "{{photo.filename}}" style = "display: none;">
+		<p> <img src="{% static "" %}{{photo.filename}}.png" width="200px"></p>
 		<p>
-		<form>
-			<span style="font-size: 20px;">1	2	3	4	5</span> <br>
-  			{% buttons %}
-			<input type = 'radio' name = 'radio-button' value='1'></input>
-			<input type = 'radio' name = 'radio-button' value='2'></input>
-			<input type = 'radio' name = 'radio-button' value='3'></input>
-			<input type = 'radio' name = 'radio-button' value='4'></input>
-			<input type = 'radio' name = 'radio-button' value='5'></input>
-			{% endbuttons %}
+		<form align = 'center' style="display: inline;" >
+			<table align='center'>
+				<tr>
+					<td></td>
+					<td><span style="font-size: 20px;">1	2	3	4	5</span> </td>
+				</tr>
+				<tr>
+					<td><span style="margin-right: 10px;">단정성</span></td>
+					<td>{% buttons %}
+			<input type = 'radio' class = 'radio' style="display: inline;" name = 'score1-{{photo.filename}}' value='1'></input>
+			<input type = 'radio' class = 'radio' style="display: inline;"  name = 'score1-{{photo.filename}}' value='2'>
+			<input type = 'radio' class = 'radio' style="display: inline;" name = 'score1-{{photo.filename}}' value='3'>
+			<input type = 'radio' class = 'radio' style="display: inline;" name = 'score1-{{photo.filename}}' value='4'></input>
+			<input type = 'radio' class = 'radio' style="display: inline;" name = 'score1-{{photo.filename}}' value='5'></input>
+			{% endbuttons %}</td>
+				</tr>
+				<tr>
+					<td><span style="margin-right: 10px;">세련성</span></td>
+					<td>{% buttons %}
+			<input type = 'radio' class = 'radio' style="display: inline;" name = 'score2-{{photo.filename}}' value='1'></input>
+			<input type = 'radio' class = 'radio' style="display: inline;"  name = 'score2-{{photo.filename}}' value='2'>
+			<input type = 'radio' class = 'radio' style="display: inline;" name = 'score2-{{photo.filename}}' value='3'>
+			<input type = 'radio' class = 'radio' style="display: inline;" name = 'score2-{{photo.filename}}' value='4'></input>
+			<input type = 'radio' class = 'radio' style="display: inline;" name = 'score2-{{photo.filename}}' value='5'></input>
+			{% endbuttons %}</td>
+				</tr>
+				<tr>
+					<td><span style="margin-right: 10px;">활동성</span></td>
+					<td>{% buttons %}
+			<input type = 'radio' class = 'radio' style="display: inline;" name = 'score3-{{photo.filename}}' value='1'></input>
+			<input type = 'radio' class = 'radio' style="display: inline;"  name = 'score3-{{photo.filename}}' value='2'>
+			<input type = 'radio' class = 'radio' style="display: inline;" name = 'score3-{{photo.filename}}' value='3'>
+			<input type = 'radio' class = 'radio' style="display: inline;" name = 'score3-{{photo.filename}}' value='4'></input>
+			<input type = 'radio' class = 'radio' style="display: inline;" name = 'score3-{{photo.filename}}' value='5'></input>
+			{% endbuttons %}</td>
+				</tr>
+			</table>
+			<br>
+  			
 		</form>
 		</p>
 	</div>
 	{% endfor %}
-	<input type = "submit" name = "next" value="다음" style="display: none;" align="center" class="btn btn">
-	<input type = "submit" name = "to_stage3" value="다음" style="display: none;" class="btn btn-success">
-
+	<input type = "submit" name = "next" value="다음" style="display: inline;" align="center" class="btn btn">
 	</div>
 
 	<div>
-	<form action="" align="center" width="100%">
-		<input type = "text" name = "result" value="" style="display: none;"></input>
-		
+	<form action="/submit" method="post" align="center" width="100%">
+		{% csrf_token %}
+
+		<input type = "text" name = "univ_code" value="" style="display: none;"></input>
+		<input type = "text" name = "studentcode" value="" style="display: none;"></input>
+		<input type = "text" name = "names" value="" style="display: none;"></input>
+		<input type = "text" name = "scores" value="" style="display: none;"></input>
+
+		<input type = "submit" name = "to_stage3" value="제출" style="display: none;" class="btn btn-success">
+
 	</form>
 	</div>
 
@@ -60,24 +95,24 @@
 
 	<script type="text/javascript">
 
-		var totalphotos = {{totalphotos}};
-		var n = 0;
-		var names = "{{names}}".split(" ");
-
-		var allRadios = document.getElementsByName('radio-button');
-		var i = 0;
-
-		document.getElementsByName(names[0])[0].style.display = 'block';
-
+		//importing data from view
 		var univcode = '{{univcode}}';
 		var studentcode = {{studentcode}};
-		var votes = [];
+		var names = "{{names}}".split(" ");
+
+		//initialization
+		var scores = [];
 		var answers = [];
+		var n = 0;
+		var allRadios = document.getElementsByClassName('radio');
+		var i = 0;
+
 
 		if (univcode == 'G') {
+			//if GIST, enter student code
 			document.getElementsByName('STAGE1')[0].style.display = 'inline';
 			document.getElementsByName('to_stage2')[0].onclick = function() {
-				input = document.getElementsByName('studentcode')[0].value;
+				input = document.getElementsByName('studentcode_input')[0].value;
 				if (input > 20000000) {
 					document.getElementsByName('STAGE1')[0].style.display = 'none';
 					document.getElementsByName('STAGE2')[0].style.display = 'inline';
@@ -87,27 +122,40 @@
 				}
 			}
 		} else {
+			//if not GIST, just get to stage 2
 			document.getElementsByName('STAGE2')[0].style.display = 'inline';
 		}
 
-		for(i = 0; i < allRadios.length; i++){
-		        allRadios[i].onclick = function(){
-			        if (n<totalphotos-1) {
-			        	document.getElementsByName('next')[0].style.display = 'inline';
-			        } else {
-			        	document.getElementsByName('to_stage3')[0].style.display = 'inline';
-			        }
-		        	votes[n] = this.value;
-		        };
+		//show first picture
+		document.getElementById(names[0]).style.display = 'block';
+
+		canPass = function() {
+			
+			return true;
 		}
 
+		//gray next button
 		document.getElementsByName("next")[0].onclick = function() {
-		    if (n < totalphotos-1) {
-		        	document.getElementsByName(names[n])[0].style.display = 'none';
-		        	document.getElementsByName(names[n+1])[0].style.display = 'block';
-		        	this.style.display = 'none';
-		        	n++;
-		    }
+			if (canPass()) {
+			    document.getElementById(names[n]).style.display = 'none';
+			    document.getElementById(names[n+1]).style.display = 'block';
+			    n++;
+
+			    if (n == names.length-1) {
+			    	this.style.display = 'none';
+			    	document.getElementsByName("to_stage3")[0].style.display = 'inline';
+			    }
+			}
 		}
+
+		//green final button
+		document.getElementsByName("to_stage3")[0].onclick = function() {
+			document.getElementsByName('to_stage3')[0].style.display = 'inline';
+			document.getElementsByName('univ_code')[0].value = univcode;
+			document.getElementsByName('studentcode')[0].value = studentcode;
+			document.getElementsByName('names')[0].value = names.join(' ');
+			document.getElementsByName('scores')[0].value = scores.join(' ');
+		}
+
 	</script>
 </body>

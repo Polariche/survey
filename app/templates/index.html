@@ -105,7 +105,6 @@
 		var answers = [];
 		var n = 0;
 		var allRadios = document.getElementsByClassName('radio');
-		var i = 0;
 
 
 		if (univcode == 'G') {
@@ -130,21 +129,57 @@
 		document.getElementById(names[0]).style.display = 'block';
 
 		canPass = function() {
-			
+			var i, j;
+
+			for (i=1;i<=3;i++) {
+				haschecked = false;
+
+				buttonname = 'score'+i+'-'+names[n];
+				buttons = document.getElementsByName(buttonname);
+
+				for (j=0;j<5;j++) {
+					if (buttons[j].checked) {
+						haschecked = true;
+						break;
+					}
+				}
+
+				if (!haschecked)
+					return false;
+			}
+
 			return true;
 		}
 
 		//gray next button
 		document.getElementsByName("next")[0].onclick = function() {
 			if (canPass()) {
-			    document.getElementById(names[n]).style.display = 'none';
-			    document.getElementById(names[n+1]).style.display = 'block';
-			    n++;
+				var i, j;
 
-			    if (n == names.length-1) {
+				//record 
+				for (i=1;i<=3;i++) {
+					buttonname = 'score'+i+'-'+names[n];
+					buttons = document.getElementsByName(buttonname);
+					
+					for (j=0;j<5;j++) {
+						if (buttons[j].checked) {
+							scores[n*3+i-1] = buttons[j].value;
+							break;
+						}
+					}
+				}
+
+			    if (n < names.length-1) {
+			    	//show next section
+				    document.getElementById(names[n]).style.display = 'none';
+				    document.getElementById(names[n+1]).style.display = 'block';
+			    	n++;
+			    } else {
 			    	this.style.display = 'none';
 			    	document.getElementsByName("to_stage3")[0].style.display = 'inline';
 			    }
+
+
 			}
 		}
 

@@ -17,21 +17,23 @@ class Photo(models.Model):
         photo = cls(filename=_filename, univ_code = _univ_code, gender = _gender)
         return photo
 
-    def GetVotes(self, univcode):
-        return [x for x in Vote.objects.filter(photo=self) if x.voter.univ_code == univcode]
+    def GetVotes(self):
+        return [x for x in Vote.objects.filter(photo=self)]
 
-    def GetMean(self, univcode):
-        votes = self.GetVotes(univcode)
-        return sum([x.score for x in votes]) / len(votes)
+    def GetMean(self):
+        votes = self.GetVotes()
+        return [sum([x.score1 for x in votes]) / len(votes), sum([x.score2 for x in votes]) / len(votes), sum([x.score3 for x in votes]) / len(votes)]
 
     def GetTotalMean(self):
         scores = 0
         totalvotes = 0
         for u in self.UNIVS:
             vote = GetVotes(u[0])
-            scores += sum([x.score for x in vote])
+            scores1 += sum([x.score1 for x in vote])
+            scores2 += sum([x.score2 for x in vote])
+            scores3 += sum([x.score3 for x in vote])
             totalvotes += len(vote)
-        return scores / totalvotes
+        return [scores1 /totalvotes, scores2 /totalvotes, scores3 /totalvotes] 
 
     def __str__(self):
         return self.filename
@@ -45,6 +47,7 @@ class Person(models.Model):
 
     studentcode = models.IntegerField(primary_key=True)
     univ_code = models.CharField(max_length=1, choices = UNIVS)
+    gender = models.CharField(max_length=1, choices = (('M', 'Male'), ('F','Female')))
 
     def __str__(self):
         return str(self.studentcode)
@@ -59,7 +62,7 @@ class Vote(models.Model):
     score3 = models.IntegerField(default=0, choices = tuple([(i,i) for i in range(1,6)]))
 
     def __str__(self):
-        return ' - '.join([str(self.voter.studentcode), self.photo.filename])
+        return ' | '.join([str(self.voter.studentcode), self.photo.filename, str(self.score1), str(self.score2), str(self.score3)])
 
 class PersonForm(ModelForm):
     class Meta:

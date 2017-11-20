@@ -11,4 +11,4 @@ def CreatePhotos():
         #Photo.CreatePhoto(file, 'G', 'F')
         path
 
-CreatePhotos()
+print([1,2,3]/3)

@@ -9,9 +9,12 @@ import openpyxl
 
 
 def photo_survey(request, univcode):
-    photos = list(Photo.objects.all())
+    gist = list(Photo.objects.filter(univ_code='G'))
+    jeon = list(Photo.objects.filter(univ_code='J'))
+    shuffle(gist)
+    shuffle(jeon)
+    photos = gist[:10]+jeon[:10]
     shuffle(photos)
-    photos = photos[:10]
 
     return render(request, 'index.html', 
         {'univcode': univcode,

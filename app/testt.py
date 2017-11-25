@@ -1,14 +1,32 @@
-from os import listdir, getcwd
+from os import listdir, getcwd, rename
 from os.path import isfile, join
-#from .models import Photo
+from .models import Photo
 
-def CreatePhotos():
-    path = "/../static/"
+def getPath():
+    return getcwd()+"/static/"
+
+def getFiles():
+    path = getPath()
     onlyfiles = [f[:-4] for f in listdir(path) if isfile(join(path, f))]
 
-    print(onlyfiles)
-    for file in onlyfiles:
-        #Photo.CreatePhoto(file, 'G', 'F')
-        path
+    return onlyfiles
 
-print([1,2,3]/3)
+def createPhotos(univ, gender):
+    onlyfiles = getFiles()
+
+    for file in onlyfiles:
+        if not Photo.objects.filter(filename=file):
+            Photo(file, univ, gender).save()
+
+def renamePhotos():
+    path = getPath()
+    files = getFiles()
+
+    for i in range(len(files)):
+        file = files[i]
+        rename(path+file+'.png', path+str(i)+'.png')
+
+        photo = Photo.objects.filter(filename=file)[0]
+        photo.filename = str(i)
+        photo.save()
+

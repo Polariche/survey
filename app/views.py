@@ -1,23 +1,32 @@
 from django.shortcuts import render
 from .models import Photo, Person, Vote, PersonForm, VoteForm
 from survey import settings
+from random import shuffle
+
 import openpyxl
 
 # Create your views here.
 
+
 def photo_survey(request, univcode):
-    photos = Photo.objects.all()
+    photos = list(Photo.objects.all())
+    shuffle(photos)
+    photos = photos[:10]
+
     return render(request, 'index.html', 
         {'univcode': univcode,
-        'studentcode': 0 if univcode == 'G' else len(Person.objects.filter(univ_code ='J')),
+        'studentcode': 0 if univcode == 'G' else 0,
         'photos': photos,
         'names': ' '.join([photo.filename for photo in photos])})
 
 def submit(request):
     if request.method == "POST":
-        post = request.POST #univcode, studentcode, (photo)names, scores, answers
+        post = request.POST #univ_code, studentcode, (photo)names, scores, answers
 
-        studentcode = int(post['studentcode'])
+        if int(post['studentcode']) != 0:
+            studentcode = int(post['studentcode'])
+        else:
+            studentcode = len(Person.objects.filter(univ_code=str(post['univ_code'])))
         names = post['names'].split()
         scores = list(map(int, post['scores'].split()))
 
@@ -46,7 +55,7 @@ def submit(request):
             
         #answers = post['answers'].split()
 
-    return render(request, 'second.html')
+    return render(request, 'redirect.html')
 
 def create_sheet(request):
     wb = openpyxl.Workbook()
@@ -56,32 +65,34 @@ def create_sheet(request):
     photos = Photo.objects.all()
 
 
-    ws.append(['사진', '소속대학', '성별', '단정성', '세련성', '활동성'])
+    ws.append(['사진', '소속대학', '성별', '응답자 수', '단정성', '세련성', '활동성'])
 
     for photo in photos:
-        ws.append([photo.filename, photo.univ_code, photo.gender, *photo.GetMean()])
+        ws.append([photo.filename, photo.univ_code, photo.gender, len(photo.GetVotes()), *photo.GetMean()])
 
 
     #sheet 2 : votes
     ws = wb.create_sheet(title="투표")
     people = Person.objects.all()
+    votes = Vote.objects.all()
 
-    ws.append(['학번', '소속대학'])
+    ws.append(['학번', '소속대학', '성별', '사진', '단정성', '세련성', '활동성'])
 
     for person in people:
-        votes = []
-        for photo in photos:
-            vote = Vote.objects.filter(photo=photo, voter=person)[0]
-            votes += [vote.score1, vote.score2, vote.score3]
+        info = [person.studentcode, person.univ_code, person.gender]
 
-        ws.append([person.studentcode, person.univ_code, *votes])
+        for vote in votes.filter(voter=person):
+            ws.append([*info, vote.photo.filename, vote.score1, vote.score2, vote.score3])
+            info = ['','','']
 
     #sheet 3
     ws = wb.create_sheet(title="")
 
+    
+
     ws.append(['사진 수', len(photos)])
     ws.append(['투표자 수', len(people)])
 
-    wb.save('result.xlsx')
+    wb.save('static/output/result.xlsx')
 
-    return render(request, 'second.html')
+    return render(request, 'result.html')

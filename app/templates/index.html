@@ -112,7 +112,7 @@
 			document.getElementsByName('STAGE1')[0].style.display = 'inline';
 			document.getElementsByName('to_stage2')[0].onclick = function() {
 				input = document.getElementsByName('studentcode_input')[0].value;
-				if (input > 20000000) {
+				if (input > 20000000 && input < 20180000) {
 					document.getElementsByName('STAGE1')[0].style.display = 'none';
 					document.getElementsByName('STAGE2')[0].style.display = 'inline';
 					studentcode = input;
